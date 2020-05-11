@@ -69,18 +69,19 @@ class PoseNetDataset(Dataset):
 
         img_name = os.path.join(self.image_dir + '/'+str(idx).zfill(5)+'.png')
         
-        mask_path = os.path.join(self.image_dir, 'mask') 
-        msk_name = os.path.join(mask_path + '/'+str(idx).zfill(5)+'.png')
+        mask_path = os.path.join('C:/Users/USER/Desktop/hand/data/', 'training', 'mask') 
+        msk_name = os.path.join(mask_path +'/'+str(idx).zfill(5)+'.png')
         
         new_img = Image.open(img_name).convert('RGB')
-        mask_img = Image.open(img_name)
+        mask_img = Image.open(msk_name)
            
         img = np.array(new_img, 'uint8')
         mask = np.array(mask_img, 'uint8')
         
         mask = np.where(mask>1, 255, 0)
         x_size,y_size,depth=np.shape(img)
-        
+        mask[mask>1]=255
+        mask[mask<=1]=0
         markers = ndi.label(mask)[0]
         masks = watershed(mask,markers,mask=mask)
           
@@ -100,6 +101,7 @@ class PoseNetDataset(Dataset):
         x_max=np.max(lo[1])
         y_min=np.min(lo[0])
         y_max=np.max(lo[0])
+        
         crop_img=img[y_min:y_max,x_min:x_max]
         
         crop_img=cv2.resize(crop_img,(y_size, x_size), interpolation=cv2.INTER_LINEAR)  
@@ -118,21 +120,5 @@ class PoseNetDataset(Dataset):
           
         return new_img, crop_img
 
-    
-        # print(new_img.shape)
-        # mask_img = rgb2gray(new_img)
-        # mask_img = Image.open(mask_img)
-        # mask_img = self.transform(mask_img)
-        
-        # if self.label_path is not None:
-        #     hand_para = self.label_matrix['handPara'][...,idx]
-        #     hand_para = torch.tensor(hand_para) # here, we will use only one label among multiple labels.
-        #     hand_side = [0,1]
-        #     hand_side = torch.tensor(hand_side)
-        #     # print(len(new_img))
-        #     # print(hand_para.shape)
-        #     return new_img, mask_img, hand_para, hand_side
-        # else:
-        #     return new_img, hand_para, [0,1]
-        
+
         

@@ -151,26 +151,26 @@ if __name__ == "__main__":
         losses = 0
         for batch_idx, (image, score_map) in enumerate(dataloader):
             # print(l)
-            print(image.shape, score_map.shape)
+            # print(image.shape, score_map.shape)
             # iteration+=1
 
-            x = image.to(device)
-            score_map = score_map.to(device)
+            # x = image.to(device)
+            # score_map = score_map.to(device)
 
-            optimizer.zero_grad()
-            output_prob = posenet.forward(x)
+            # optimizer.zero_grad()
+            # output_prob = posenet.forward(x)
             
-            loss = criterion(output_prob, score_map) 
-            loss.backward()
-            lr_scheduler(optimizer, iteration)
-            optimizer.step()                                
+            # loss = criterion(output_prob, score_map) 
+            # loss.backward()
+            # lr_scheduler(optimizer, iteration)
+            # optimizer.step()                                
 
-            if (batch_idx+1)%(args.log_interval) == 0 : 
-                print("Epoch {}/{}   Batch {}/{}   loss {:2.4f} ".format(epoch_idx, args.epochs, (batch_idx+1), len(dataloader), losses/(batch_idx+1)))
-                if min_loss >= losses/(batch_idx+1) :
-                    min_loss = losses/(batch_idx+1)
-                    print("min loss : %f " %(min_loss))
-                    torch.save(posenet.state_dict(), save_path+'posenet.pth')
+            # if (batch_idx+1)%(args.log_interval) == 0 : 
+            #     print("Epoch {}/{}   Batch {}/{}   loss {:2.4f} ".format(epoch_idx, args.epochs, (batch_idx+1), len(dataloader), losses/(batch_idx+1)))
+            #     if min_loss >= losses/(batch_idx+1) :
+            #         min_loss = losses/(batch_idx+1)
+            #         print("min loss : %f " %(min_loss))
+            #         torch.save(posenet.state_dict(), save_path+'posenet.pth')
 
             plt.figure()
             img = to_np(image[0,...])
